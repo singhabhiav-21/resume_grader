@@ -1,12 +1,8 @@
 import os
-from contextlib import contextmanager
-import sqlalchemy
 from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 def get_engine():
     url = (
