@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
-from engine import get_engine
+from app.engine import get_engine
 
 session_db = sessionmaker(get_engine(), autoflush=False, autocommit=False)
 
@@ -11,7 +11,7 @@ def db():
     try:
         yield session
         session.commit()
-    except:
+    except Exception:
         session.rollback()
         raise
     finally:
