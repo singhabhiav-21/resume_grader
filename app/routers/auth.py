@@ -28,7 +28,7 @@ class LoginResponse(BaseModel):
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(request: RegisterUserRequest):
-    result = register_user(request.email, request.password, request.name)
+    result = register_user(email=request.email, password=request.password, name=request.name)
     if not result:
         raise HTTPException(status_code=400, detail="Requirements Not Met!")
     return {'message': "user registration successful"}
@@ -39,7 +39,7 @@ async def user_login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()])
     result = login_user(form_data.username, form_data.password)
     if not result:
         raise HTTPException(status_code=401, detail="Invalid Credentials")
-    token = create_user_access_token(result.user_id, result.email, timedelta(minutes=15))
+    token = create_user_access_token(result.user_id, result.email, timedelta(days=15))
     return LoginResponse(
         access_token=token,
         token_type='bearer'
