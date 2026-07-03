@@ -9,7 +9,7 @@ bcrypt
 sentence-transformers<3.0
 chromadb
 pymupdf
-python-jose
+pyjwt
 passlib
 python-multipart
 pytest
