@@ -86,4 +86,4 @@ def login_user(email, password):
             return False
         if not bcrypt.checkpw(password.encode('UTF-8'), result.password):
             return False
-    return True
+    return result
