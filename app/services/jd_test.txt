@@ -1,0 +1,63 @@
+About the job
+his position is listed on behalf of a partner company, who manages all applications and next steps. Our partner is looking for a Golang Engineer based in Sweden.
+
+This role offers the opportunity to build and scale high-performance systems using Go within a globally distributed, fully remote engineering organization.
+
+You will contribute to core infrastructure and open-source driven products that power enterprise, cloud, AI, and IoT ecosystems worldwide.
+
+The environment is highly collaborative, involving engineers, community contributors, and cross-functional teams across multiple time zones.
+
+You will work on systems that emphasize performance, security, and reliability at scale.
+
+The role encourages ownership, from design and development through to deployment and operations in some cases.
+
+It is well-suited for engineers who enjoy solving complex distributed systems challenges and improving engineering practices continuously.
+
+You will be part of a culture that values technical excellence, autonomy, and continuous learning in a remote-first setup.
+
+Accountabilities
+
+Design, develop, test, and maintain robust, well-documented software systems using Golang, ensuring high performance and reliability.
+Debug, troubleshoot, and resolve production and user-facing issues across distributed systems and services.
+Participate actively in code reviews, architectural discussions, and technical design processes with global engineering teams.
+Collaborate with internal teams and external contributors to define and refine technical specifications and system improvements.
+Contribute to operational excellence by improving engineering workflows, deployment processes, and system observability.
+In certain cases, deploy, monitor, and operate services owned by the team in production environments.
+Support product success through technical advocacy, documentation, and knowledge sharing.
+
+Requirements
+
+Strong academic background in Computer Science, Engineering, or a related STEM field, or equivalent practical experience.
+Proven experience designing and building production-grade software in Golang, ideally in Linux-based environments.
+Deep familiarity with Linux systems (Ubuntu or Debian preferred) and strong command of system-level concepts.
+Experience with distributed systems, APIs, and scalable backend architectures (especially for senior-level roles).
+Strong problem-solving abilities, with a track record of delivering high-quality work independently and on schedule.
+Excellent written and verbal communication skills in English, with the ability to collaborate across global teams.
+Strong interpersonal skills, adaptability, curiosity, and a proactive, ownership-driven mindset.
+Ability and willingness to travel internationally twice a year for team gatherings.
+Nice to have: experience with Ubuntu ecosystem tools such as Juju, LXD, MicroK8s, Snapd, Ubuntu Core, or Ubuntu Pro; performance tuning and security expertise.
+
+Benefits
+
+Competitive global compensation benchmarked to experience, performance, and location.
+Performance-based annual bonus or commission structure.
+Annual compensation reviews to recognize and reward contributions.
+Remote-first work environment with distributed global teams.
+USD 2,000 annual learning and development budget.
+Generous annual leave plus maternity and paternity leave policies.
+Employee Assistance Program supporting wellbeing and personal needs.
+Opportunities for international travel to team events and collaboration sessions.
+Travel benefits including Priority Pass and upgrades for long-haul company events.
+Recognition programs and rewards for outstanding performance.
+
+How Jobgether Works
+
+We use an AI-powered matching process to ensure your application is reviewed quickly, objectively, and fairly against the role's core requirements. Our system identifies the top-fitting candidates, and this shortlist is then shared directly with the hiring company. The final decision and next steps (interviews, assessments) are managed by their internal team.
+
+We appreciate your interest and wish you the best!
+
+ Why Apply Through Jobgether?
+
+Data Privacy Notice: By submitting your application, you acknowledge that Jobgether will process your personal data to evaluate your candidacy and share relevant information with the hiring employer. This processing is based on legitimate interest and pre-contractual measures under applicable data protection laws (including GDPR). You may exercise your rights (access, rectification, erasure, objection) at any time.
+
+We may use artificial intelligence (AI) tools to support parts of the hiring process, such as reviewing applications, analyzing resumes, or assessing responses and identifying potential inconsistencies or verification signals in application materials based on available information. These tools assist our recruitment team but do not replace human judgment. Final hiring decisions are ultimately made by humans. If you would like more information about how your data is processed, please contact us.
