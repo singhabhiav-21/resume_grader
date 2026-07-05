@@ -1,7 +1,6 @@
 import pymupdf4llm
 import re
-import json
-
+import os
 
 HEADER_PATTERNS = {
     "education": r"education|academic background",
@@ -13,7 +12,7 @@ HEADER_PATTERNS = {
 HEADER_LINE_RE = re.compile(r"^(#{1,6})\s+(.*)$", re.MULTILINE)
 
 
-def convert_pdf_to_markdown(filename, md_path="/Users/abhinavsingh/resume-grader/app/disk_stor/extracter.md"):
+def convert_pdf_to_markdown(filename, md_path=f"{os.getenv('FILE_PATH')}extracter.md"):
     md = pymupdf4llm.to_markdown(filename)
     if md_path:
         with open(md_path, "w") as file:
@@ -119,7 +118,7 @@ def prepare_to_embed(chunks: dict):
 
 
 def pdf_extractor(filename):
-    md_text = convert_pdf_to_markdown(f"/Users/abhinavsingh/resume-grader/app/disk_stor/{filename}")
+    md_text = convert_pdf_to_markdown(f"{os.getenv('FILE_PATH')}{filename}")
     print(f"Saved markdown to resume.md ({len(md_text)} chars)")
 
     chunks = split_markdown_to_chunks(md_text)
