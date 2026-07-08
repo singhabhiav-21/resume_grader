@@ -1,14 +1,9 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import re
+import os
+from dotenv import load_dotenv
 
-
-
-document = "/Users/abhinavsingh/resume-grader/app/services/jd_test.txt"
-
-with open(document) as f:
-    jd = f.read()  #print(text_splitter.split_text(jd))
-
-
+load_dotenv()
 
 TITLES_PATTERN = {
     "requirements": r"requirements|qualifications|required qualifications|minimum qualifications|what you'll need|what you need|must haves|skills & requirements|basic qualifications|what we're looking for|who you are|experience required",
@@ -90,6 +85,27 @@ def chunk_to_embed(chunks: dict):
         final[category] = text_splitter.split_text(text)
     return final
 
+def proper_meta_data(chunks: dict):
+    flattened = []
+    for category, chunks in chunks.items():
+        for i, chunk_text in enumerate(chunks):
+            flattened.append({
+                "id": f"{category}_{i}",
+                "text": chunk_text,
+                "category": category,
+            })
+    return flattened
 
-header = split_header(jd)
-print(chunk_to_embed(header))
+
+def ready_to_embed(filename):
+    document = f"/app/services/{filename}"
+
+    with open(document) as f:
+        jd = f.read()  # print(text_splitter.split_text(jd))
+
+    header = split_header(jd)
+    final = chunk_to_embed(header)
+    return proper_meta_data(final)
+
+
+print(ready_to_embed("jd_test.txt"))
