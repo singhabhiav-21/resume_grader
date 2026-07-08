@@ -34,7 +34,7 @@ def check_gap(chunks):
         jd_category = chunk["jd_category"]
         distance = chunk["matches"]["distances"][0][0]
         resume_text = chunk["matches"]["documents"][0][0]
-        resume_category  = chunk["matches"]["metadatas"][0][0]["category"]
+        resume_category = chunk["matches"]["metadatas"][0][0]["category"]
 
         if distance < 0.70:
             bucket = "covered"
@@ -47,7 +47,9 @@ def check_gap(chunks):
     return summary
 
 
+def prepare_for_llm():
+    results = get_results()
+    final = check_gap(results)
+    return final
 
 
-ans = get_results()
-print(check_gap(ans))
