@@ -1,6 +1,9 @@
 import pymupdf4llm
 import re
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 HEADER_PATTERNS = {
     "education": r"education|academic background",
@@ -98,33 +101,25 @@ def chunk_for_embedding(chunk, limit=1500):
 
 def prepare_to_embed(chunks: dict):
     ready = []
-    if chunks.get("intro"):
-        for i, text in enumerate(chunks["intro"]):
-            ready.append({"id": f"intro{i}", "text": text, "section": "intro"})
-    if chunks.get("skills"):
-        for i, text in enumerate(chunks["skills"]):
-            ready.append({"id": f"skills_{i}", "text": text, "section": "skills"})
-    if chunks.get("education"):
-        for i, text in enumerate(chunks["education"]):
-            ready.append({"id": f"education_{i}", "text": text, "section": "education" })
-    if chunks.get("projects"):
-        for i, text in enumerate(chunks["projects"]):
-            ready.append({"id": f"projects_{i}", "text": text, "section": "projects"})
-    if chunks.get("experience"):
-        for i, text in enumerate(chunks["experience"]):
-            ready.append({"id": f"experience_{i}", "text": text, "section": "experience"})
+    for category, chunk in chunks.items():
+        if category == "intro":
+            continue
+        for i, text in enumerate(chunk):
+            ready.append({
+                "id": f"{category}_{i}",
+                "text": f"{text}",
+                "category": f"{category}"
+            })
 
     return ready
 
 
 def pdf_extractor(filename):
     md_text = convert_pdf_to_markdown(f"{os.getenv('FILE_PATH')}{filename}")
-    print(f"Saved markdown to resume.md ({len(md_text)} chars)")
-
     chunks = split_markdown_to_chunks(md_text)
     chunked = chunk_for_embedding(chunks)
     ready = prepare_to_embed(chunked)
     return ready
 
 
-print(pdf_extractor("sampleq.pdf"))
+ans = pdf_extractor("sampleq.pdf")
