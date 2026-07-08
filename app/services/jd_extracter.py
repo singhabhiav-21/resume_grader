@@ -1,17 +1,24 @@
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 import re
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 TITLES_PATTERN = {
-    "requirements": r"requirements|qualifications|required qualifications|minimum qualifications|what you'll need|what you need|must haves|skills & requirements|basic qualifications|what we're looking for|who you are|experience required",
-    "optional": r"additional qualifications|bonus points|bonus skills|desired skills|extra credit|good to have|nice to have|pluses|preferred qualifications|preferred skills|what would be great",
-    "responsibilities": r"core responsibilities|day-to-day|duties|job duties|key responsibilities|responsibilities|the impact you'll have|the role|what you'll be doing|what you'll do|your role|accountabilities"
+    "requirements": r"requirements|qualifications|required qualifications|minimum qualifications|what you'll "
+                    r"need|what you need|must haves|skills & requirements|basic qualifications|what we're looking "
+                    r"for|who you are|experience required",
+    "optional": r"additional qualifications|bonus points|bonus skills|desired skills|extra credit|good to have|nice "
+                r"to have|pluses|preferred qualifications|preferred skills|what would be great",
+    "responsibilities": r"core responsibilities|day-to-day|duties|job duties|key "
+                        r"responsibilities|responsibilities|the impact you'll have|the role|what you'll be doing|what "
+                        r"you'll do|your role|accountabilities"
 }
 
-IGNORE_PATTERN = r"benefits|perks|how (it|jobgether) works|why apply|data privacy notice|about (us|the company)|equal opportunity"
+IGNORE_PATTERN = (
+    r"benefits|perks|how (?:it|jobgether) works|why apply|"
+    r"data privacy notice|about\s+\w+|equal opportunity|"
+    r"practical details|why this role|the team"
+)
 
 
 def classifying_headers(line):
@@ -69,21 +76,18 @@ def split_header(texts: str):
             sections[category] = sections[category] + "\n" + body
         else:
             sections[category] = "\n" + body
-    if sections["__ignore__"]:
-        sections.pop("__ignore__", None)
-    if sections["intro"]:
-        sections.pop("intro", None)
+    sections.pop("__ignore__", None)
+    sections.pop("intro", None)
     return sections
 
 
 def chunk_to_embed(chunks: dict):
     final = {}
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=450, chunk_overlap=50, length_function=len, is_separator_regex=False)
     for category, text in chunks.items():
-        if not text:
-            final[category] = []
-        final[category] = text_splitter.split_text(text)
+        bullet = [line.strip() for line in text.split("\n") if line.strip()]
+        final[category] = bullet
     return final
+
 
 def proper_meta_data(chunks: dict):
     flattened = []
@@ -98,7 +102,7 @@ def proper_meta_data(chunks: dict):
 
 
 def ready_to_embed(filename):
-    document = f"/app/services/{filename}"
+    document = f"/app/services/jd_test.txt"
 
     with open(document) as f:
         jd = f.read()  # print(text_splitter.split_text(jd))
@@ -108,4 +112,3 @@ def ready_to_embed(filename):
     return proper_meta_data(final)
 
 
-print(ready_to_embed("jd_test.txt"))
