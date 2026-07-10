@@ -2,10 +2,8 @@ from sentence_embedder import model
 from app.chroma_client import client
 
 
-def get_results():
+def get_results(resume, jd):
     results = []
-    resume = client.get_collection("resume")
-    jd = client.get_collection("job_description")
     jd_data = jd.get(include=["documents", "metadatas"])
 
     for text, meta in zip(jd_data["documents"], jd_data["metadatas"]):
@@ -46,10 +44,5 @@ def check_gap(chunks):
         summary[jd_category][bucket].append({"jd_text": jd_text, "distance": distance, "resume_text": resume_text, "resume_section": resume_category})
     return summary
 
-
-def prepare_for_llm():
-    results = get_results()
-    final = check_gap(results)
-    return final
 
 

@@ -1,8 +1,7 @@
 from google import genai
-from gap_analyzer import prepare_for_llm
 
 
-def get_results(chunks):
+def get_results_feedback(chunks):
     prompt_details = []
     for cat, status in chunks.items():
         for some, gaps in status.items():
@@ -74,15 +73,20 @@ def llm_feedback(prompt):
     client = genai.Client()
     interaction = client.interactions.create(
         model="gemini-3.5-flash",
-        input=prompt
+        input=prompt,
+        generation_config={
+            "thinking_level": "medium"
+        }
     )
-    return interaction.output_text
 
+    final = None
 
-def check():
-    results = get_results(prepare_for_llm())
-    prompt = build_prompt(results)
-    return llm_feedback(prompt)
+    for event in interaction:
+        if event.event_type == "error":
+            print("Error: ", event.error.code, event.error.message)
+            break
+        elif event.event_type == "interaction.completed":
+            final = event.interaction
 
-
-print(check())
+    if final:
+        print(final.output_text)
