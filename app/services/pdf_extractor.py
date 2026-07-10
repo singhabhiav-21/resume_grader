@@ -15,11 +15,17 @@ HEADER_PATTERNS = {
 HEADER_LINE_RE = re.compile(r"^(#{1,6})\s+(.*)$", re.MULTILINE)
 
 
-def convert_pdf_to_markdown(filename, md_path=f"{os.getenv('FILE_PATH')}extracter.md"):
-    md = pymupdf4llm.to_markdown(filename)
-    if md_path:
-        with open(md_path, "w") as file:
+def convert_pdf_to_markdown(filepath, job_id, md_path=f"{os.getenv('FILE_PATH')}"):
+    md = pymupdf4llm.to_markdown(filepath)
+    file_name = filepath.split("/")[-1]
+    print(file_name)
+    md_path += str(job_id) + file_name + ".md"
+    print(md_path)
+    try:
+        with open(md_path, "x") as file:
             file.write(md)
+    except FileExistsError:
+        raise FileExistsError("File already exists!")
     return md
 
 
@@ -112,14 +118,3 @@ def prepare_to_embed(chunks: dict):
             })
 
     return ready
-
-
-def pdf_extractor(filename):
-    md_text = convert_pdf_to_markdown(f"{os.getenv('FILE_PATH')}{filename}")
-    chunks = split_markdown_to_chunks(md_text)
-    chunked = chunk_for_embedding(chunks)
-    ready = prepare_to_embed(chunked)
-    return ready
-
-
-ans = pdf_extractor("sampleq.pdf")

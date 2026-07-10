@@ -5,9 +5,7 @@ class PDFValidationError(Exception):
     pass
 
 
-def validate_pdf(files_bytes: bytes, filename: str):
-    if not filename or filename.lower().strip().endswith(".pdf"):
-        raise PDFValidationError("File is not a pdf")
+def validate_pdf(files_bytes: bytes):
 
     if len(files_bytes) > 5 * 1024 * 1024:
         raise PDFValidationError("File too large, keep it under 5 MB")
