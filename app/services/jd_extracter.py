@@ -100,15 +100,3 @@ def proper_meta_data(chunks: dict):
             })
     return flattened
 
-
-def ready_to_embed(filename):
-    document = f"/app/services/jd_test.txt"
-
-    with open(document) as f:
-        jd = f.read()  # print(text_splitter.split_text(jd))
-
-    header = split_header(jd)
-    final = chunk_to_embed(header)
-    return proper_meta_data(final)
-
-
