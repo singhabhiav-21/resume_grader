@@ -62,6 +62,8 @@ async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user
 async def user_input_jd(user_id: Annotated[uuid.UUID, Depends(get_current_user)], request: UserUploadJobDesc):
     jd_text = request.description
     job_id = request.job_id
+    if not check_job(job_id, user_id):
+        raise HTTPException(status=404, detail="Job Not Found")
     try:
         cleaned = validate_jd(jd_text)
     except Exception as e:
