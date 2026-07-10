@@ -2,6 +2,8 @@ import os
 import tempfile
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+
+from app.services.job_to_user import add_job, check_job, update_job
 from app.services.pdf_validator import validate_pdf, PDFValidationError
 from app.services.pdf_extractor import convert_pdf_to_markdown, split_markdown_to_chunks, chunk_for_embedding, \
     prepare_to_embed
@@ -10,7 +12,6 @@ from app.services.jd_extracter import split_header, chunk_to_embed, proper_meta_
 from app.services.gap_analyzer import get_results, check_gap
 from app.services.feedback import get_results_feedback,build_prompt, llm_feedback
 from pydantic import BaseModel
-from starlette import status
 from app.chroma_client import client
 from typing import Annotated
 from app.dependencies import get_current_user
@@ -22,8 +23,9 @@ router = APIRouter(
 )
 
 
-class UserUploadRequest(BaseModel):
+class UserUploadRespnse(BaseModel):
     filename: str
+    status: str
     job_id: str
 
 
@@ -32,7 +34,7 @@ class UserUploadJobDesc(BaseModel):
     job_id: str
 
 
-@router.post("/upload_resume", response_model=UserUploadRequest)
+@router.post("/upload_resume", response_model=UserUploadRespnse)
 async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user)], file: Annotated[UploadFile, File()]):
     filebytes = await file.read()
     try:
@@ -52,6 +54,7 @@ async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user
     finally:
         os.unlink(temp_path)
     create_resume_collection(job_id, ready)
+    add_job(job_id, user_id, "Processing resume")
     return {"filename": file.filename, "status": "sucess", "job_id": job_id}
 
 
@@ -69,13 +72,14 @@ async def user_input_jd(user_id: Annotated[uuid.UUID, Depends(get_current_user)]
     metadata = proper_meta_data(chunks)
 
     create_jd_collection(job_id, metadata)
+    update_job(job_id, user_id, "Processing Job Description")
     return {"Message": "Success"}
 
 
 @router.post(path="/analyze/{job_id}")
 async def analyze(user_id: Annotated[uuid, Depends(get_current_user)], job_id: str):
-    if job_id == "None":
-        raise HTTPException(status_code=404, detail="Job not found")
+    if not check_job(job_id, user_id):
+        raise HTTPException(status_code=404, detail="Job not Found!")
 
     cv_collection = client.get_collection(f"resume_{job_id}")
     jd_collection = client.get_collection(f"jd_{job_id}")
@@ -88,6 +92,7 @@ async def analyze(user_id: Annotated[uuid, Depends(get_current_user)], job_id: s
     prompt = build_prompt(llm_chunks)
     llm_response = llm_feedback(prompt)
 
+    update_job(job_id,user_id, "Completed")
     return llm_response
 
 
