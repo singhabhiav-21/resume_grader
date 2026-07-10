@@ -1,3 +1,5 @@
+import uuid
+
 from sentence_transformers import SentenceTransformer
 from jd_extracter import ready_to_embed
 from pdf_extractor import pdf_extractor
@@ -27,12 +29,14 @@ def create_collection(c, name):
     return c.create_collection(name, metadata={"hnsw:space": "cosine"})
 
 
-cv = pdf_extractor("sampleq.pdf")
-jd = ready_to_embed("jd_test.txt")
+def create_resume_collection(job_id: str, chunks: list[dict]):
+    collection = create_collection(client, f"resume_{job_id}")
+    chunk_embedder(chunks, collection)
+    return collection
 
-cv_collection = create_collection(client, "resume")
-jd_collection = create_collection(client, "job_description")
 
-chunk_embedder(cv, cv_collection)
-chunk_embedder(jd, jd_collection)
+def create_jd_collection(job_id: str, chunks: list[dict]):
+    collection = create_collection(client, f"jd_{job_id}")
+    chunk_embedder(chunks, collection)
+    return collection
 
