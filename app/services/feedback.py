@@ -79,14 +79,4 @@ def llm_feedback(prompt):
         }
     )
 
-    final = None
-
-    for event in interaction:
-        if event.event_type == "error":
-            print("Error: ", event.error.code, event.error.message)
-            break
-        elif event.event_type == "interaction.completed":
-            final = event.interaction
-
-    if final:
-        print(final.output_text)
+    return interaction.output_text
