@@ -36,23 +36,17 @@ async function handleSubmit(e) {
 }
 
   return (
+  <div className="card">
+    <h1>Welcome back</h1>
+    <p className="subtitle">Log in to analyze your resume</p>
     <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="password"
-      />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
       <button type="submit">Log in</button>
-      {error && <p>{error}</p>}
+      {error && <p className="status error">{error}</p>}
     </form>
-  );
+  </div>
+);
 }
 
 export default Login;

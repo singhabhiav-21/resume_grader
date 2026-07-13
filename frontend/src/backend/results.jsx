@@ -41,11 +41,15 @@ function Results({ jobId }) {
   if (loading) return <p>Analyzing resume against job description...</p>;
   if (error) return <p>{error}</p>;
 
-  return (
-    <div style={{ whiteSpace: "pre-wrap" }}>
-      {feedback}
-    </div>
-  );
+  if (loading) return <div className="card card-wide"><p className="status">Analyzing resume against job description...</p></div>;
+if (error) return <div className="card card-wide"><p className="status error">{error}</p></div>;
+
+return (
+  <div className="card card-wide">
+    <h1>Your results</h1>
+    <div className="results-content">{feedback}</div>
+  </div>
+);
 }
 
 export default Results;

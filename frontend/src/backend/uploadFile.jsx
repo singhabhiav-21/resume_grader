@@ -42,12 +42,16 @@ function UploadResume({onUploadSuccess}) {
   }
 
   return (
+  <div className="card">
+    <h1>Upload your resume</h1>
+    <p className="subtitle">PDF format only</p>
     <form onSubmit={handleUpload}>
       <input type="file" accept=".pdf" onChange={handleFileChange} />
       <button type="submit">Upload resume</button>
-      {status && <p>{status}</p>}
+      {status && <p className="status">{status}</p>}
     </form>
-  );
+  </div>
+);
 }
 
 export default UploadResume;

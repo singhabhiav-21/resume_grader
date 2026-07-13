@@ -42,17 +42,16 @@ function UploadJobDescription({ jobId, onJdUploaded }) {
   }
 
   return (
+  <div className="card card-wide">
+    <h1>Job description</h1>
+    <p className="subtitle">Paste the full job posting</p>
     <form onSubmit={handleSubmit}>
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Paste job description here"
-        rows={10}
-      />
-      <button type="submit">Upload job description</button>
-      {status && <p>{status}</p>}
+      <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Paste job description here" />
+      <button type="submit">Analyze</button>
+      {status && <p className="status">{status}</p>}
     </form>
-  );
+  </div>
+);
 }
 
 export default UploadJobDescription;
