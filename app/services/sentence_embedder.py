@@ -1,8 +1,4 @@
-import uuid
-
 from sentence_transformers import SentenceTransformer
-from jd_extracter import ready_to_embed
-from pdf_extractor import pdf_extractor
 from app.chroma_client import client
 
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")

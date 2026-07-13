@@ -11,7 +11,7 @@ def check_job(job_id, user_id):
 
 def add_job(job_id, user_id, status):
     with db() as session:
-        query = Jobs(job_id, user_id, status)
+        query = Jobs(job_id=job_id, user_id=user_id, status=status)
         session.add(query)
 
 

@@ -19,7 +19,7 @@ BLOCK_TEXT = [
 
 def validate_jd(jd_text: str):
     cleaned = jd_text.lower()
-    if len(cleaned) > 2000:
+    if len(cleaned) > 3000:
         raise ValueError("The text is too large!")
     for text in BLOCK_TEXT:
         if re.search(text, cleaned):

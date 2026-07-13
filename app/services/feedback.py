@@ -78,5 +78,4 @@ def llm_feedback(prompt):
             "thinking_level": "medium"
         }
     )
-
     return interaction.output_text

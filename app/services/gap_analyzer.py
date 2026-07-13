@@ -1,5 +1,4 @@
-from sentence_embedder import model
-from app.chroma_client import client
+from app.services.sentence_embedder import model
 
 
 def get_results(resume, jd):
