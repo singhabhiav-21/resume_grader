@@ -1,3 +1,5 @@
+import uuid
+
 import jwt
 import os
 from fastapi import Depends, HTTPException
@@ -12,7 +14,7 @@ def get_current_user(token: str = Depends(oauth2)):
         user_id = payload.get("sub")
         if not user_id:
             raise HTTPException(status_code=401, detail="Invalid token")
-        return user_id
+        return uuid.UUID(user_id)
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Expired Token")
     except jwt.InvalidTokenError:
