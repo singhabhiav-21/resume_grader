@@ -36,6 +36,7 @@ class UserUploadJobDesc(BaseModel):
 
 @router.post("/upload_resume", response_model=UserUploadRespnse)
 async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user)], file: Annotated[UploadFile, File()]):
+    print(f"user_id = {user_id!r}, type = {type(user_id)}")
     filebytes = await file.read()
     try:
         validate_pdf(filebytes)
@@ -63,13 +64,14 @@ async def user_input_jd(user_id: Annotated[uuid.UUID, Depends(get_current_user)]
     jd_text = request.description
     job_id = request.job_id
     if not check_job(job_id, user_id):
-        raise HTTPException(status=404, detail="Job Not Found")
+        raise HTTPException(status_code=404, detail="Job Not Found")
     try:
         cleaned = validate_jd(jd_text)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
     header = split_header(cleaned)
+    
     chunks = chunk_to_embed(header)
     metadata = proper_meta_data(chunks)
 
@@ -79,7 +81,7 @@ async def user_input_jd(user_id: Annotated[uuid.UUID, Depends(get_current_user)]
 
 
 @router.post(path="/analyze/{job_id}")
-async def analyze(user_id: Annotated[uuid, Depends(get_current_user)], job_id: str):
+async def analyze(user_id: Annotated[uuid.UUID, Depends(get_current_user)], job_id: str):
     if not check_job(job_id, user_id):
         raise HTTPException(status_code=404, detail="Job not Found!")
 
@@ -94,7 +96,7 @@ async def analyze(user_id: Annotated[uuid, Depends(get_current_user)], job_id: s
     prompt = build_prompt(llm_chunks)
     llm_response = llm_feedback(prompt)
 
-    update_job(job_id,user_id, "Completed")
+    update_job(job_id, user_id, "Completed")
     return llm_response
 
 

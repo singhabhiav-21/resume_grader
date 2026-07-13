@@ -39,7 +39,8 @@ async def user_login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()])
     result = login_user(form_data.username, form_data.password)
     if not result:
         raise HTTPException(status_code=401, detail="Invalid Credentials")
-    token = create_user_access_token(result.user_id, result.email, timedelta(days=15))
+    ids, email = result
+    token = create_user_access_token(ids, email, timedelta(days=15))
     return LoginResponse(
         access_token=token,
         token_type='bearer'
