@@ -54,9 +54,9 @@ def hash_pw(password):
     if not helper_password(password):
         return False
     salt = bcrypt.gensalt()
-    byts = password.encode('utf-8')
+    byts = password.encode('UTF-8')
     hashed_pw = bcrypt.hashpw(byts, salt)
-    return hashed_pw
+    return hashed_pw.decode('UTF-8')
 
 
 def register_user(name, email, password):
@@ -70,7 +70,7 @@ def register_user(name, email, password):
 
     try:
         with db() as session:
-            stmt = insert(Users).values(Users.name == name, Users.email == email, Users.password == password)
+            stmt = insert(Users).values(name=name, email=email, password=password)
             session.execute(stmt)
     except IntegrityError:
         return False
@@ -79,11 +79,13 @@ def register_user(name, email, password):
 
 def login_user(email, password):
     email = email.lower().strip()
+    ids, mail = "", ""
     with db() as session:
         stmt = select(Users).where(Users.email == email)
         result = session.scalar(stmt)
         if result is None:
             return False
-        if not bcrypt.checkpw(password.encode('UTF-8'), result.password):
+        if not bcrypt.checkpw(password.encode('UTF-8'), result.password.encode('UTF-8')):
             return False
-    return result
+        ids, mail = result.user_id, result.email
+    return ids, mail
