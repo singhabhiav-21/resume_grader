@@ -36,7 +36,6 @@ class UserUploadJobDesc(BaseModel):
 
 @router.post("/upload_resume", response_model=UserUploadRespnse)
 async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user)], file: Annotated[UploadFile, File()]):
-    print(f"user_id = {user_id!r}, type = {type(user_id)}")
     filebytes = await file.read()
     try:
         validate_pdf(filebytes)
@@ -48,7 +47,7 @@ async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user
         temp.write(filebytes)
         temp_path = temp.name
     try:
-        pdf_to_md = convert_pdf_to_markdown(temp_path, job_id)
+        pdf_to_md, md_path = convert_pdf_to_markdown(temp_path, job_id)
         chunks = split_markdown_to_chunks(pdf_to_md)
         chunked = chunk_for_embedding(chunks)
         ready = prepare_to_embed(chunked)
@@ -56,6 +55,7 @@ async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user
         os.unlink(temp_path)
     create_resume_collection(job_id, ready)
     add_job(job_id, user_id, "Processing resume")
+    os.remove(md_path)
     return {"filename": file.filename, "status": "sucess", "job_id": job_id}
 
 
@@ -71,7 +71,7 @@ async def user_input_jd(user_id: Annotated[uuid.UUID, Depends(get_current_user)]
         raise HTTPException(status_code=400, detail=str(e))
 
     header = split_header(cleaned)
-    
+
     chunks = chunk_to_embed(header)
     metadata = proper_meta_data(chunks)
 
@@ -95,6 +95,8 @@ async def analyze(user_id: Annotated[uuid.UUID, Depends(get_current_user)], job_
     llm_chunks = get_results_feedback(gap_analysis)
     prompt = build_prompt(llm_chunks)
     llm_response = llm_feedback(prompt)
+    client.delete_collection(f"resume_{job_id}")
+    client.delete_collection(f"jd_{job_id}")
 
     update_job(job_id, user_id, "Completed")
     return llm_response
