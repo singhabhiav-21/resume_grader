@@ -1,4 +1,6 @@
 from google import genai
+from google.genai._gaos.lib.compat_errors import RateLimitError
+from fastapi import HTTPException
 
 
 def get_results_feedback(chunks):
@@ -71,11 +73,14 @@ Otherwise, base this section only on entries actually marked GAP above.
 
 def llm_feedback(prompt):
     client = genai.Client()
-    interaction = client.interactions.create(
-        model="gemini-3.5-flash",
-        input=prompt,
-        generation_config={
-            "thinking_level": "medium"
-        }
-    )
+    try:
+        interaction = client.interactions.create(
+            model="gemini-3.5-flash",
+            input=prompt,
+            generation_config={
+                "thinking_level": "medium"
+            }
+        )
+    except RateLimitError:
+        raise HTTPException(status_code=503, detail="Analysis service is temporarily unavailable, please try again shortly")
     return interaction.output_text
