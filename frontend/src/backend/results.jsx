@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function Results({ jobId }) {
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     async function fetchResults() {
@@ -35,21 +36,20 @@ function Results({ jobId }) {
       }
     }
 
+    if (hasFetched.current) return;
+    hasFetched.current = true;
     fetchResults();
   }, [jobId]);
 
-  if (loading) return <p>Analyzing resume against job description...</p>;
-  if (error) return <p>{error}</p>;
-
   if (loading) return <div className="card card-wide"><p className="status">Analyzing resume against job description...</p></div>;
-if (error) return <div className="card card-wide"><p className="status error">{error}</p></div>;
+  if (error) return <div className="card card-wide"><p className="status error">{error}</p></div>;
 
-return (
-  <div className="card card-wide">
-    <h1>Your results</h1>
-    <div className="results-content">{feedback}</div>
-  </div>
-);
+  return (
+    <div className="card card-wide">
+      <h1>Your results</h1>
+      <div className="results-content">{feedback}</div>
+    </div>
+  );
 }
 
 export default Results;

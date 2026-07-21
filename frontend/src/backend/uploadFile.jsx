@@ -3,6 +3,8 @@ import { useState } from "react";
 function UploadResume({onUploadSuccess}) {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
 
   function handleFileChange(e) {
   console.log("file selected:", e.target.files[0]);
@@ -18,7 +20,7 @@ function UploadResume({onUploadSuccess}) {
     // TODO: build a FormData object and append the file to it
     const formData = new FormData();
     formData.append("file", file );
-
+  setSubmitting(true);
     try {
       const response = await fetch("http://localhost:8080/analyze/upload_resume", {
         method: "POST",
@@ -38,7 +40,9 @@ function UploadResume({onUploadSuccess}) {
       onUploadSuccess(data.job_id);
     } catch (err) {
       setStatus("Something went wrong");
-    }
+    } finally {
+    setSubmitting(false);
+  }
   }
 
   return (
@@ -50,6 +54,7 @@ function UploadResume({onUploadSuccess}) {
       <button type="submit">Upload resume</button>
       {status && <p className="status">{status}</p>}
     </form>
+
   </div>
 );
 }

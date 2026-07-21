@@ -4,14 +4,17 @@ function Login({onLoginSuccess}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
 
 async function handleSubmit(e) {
   e.preventDefault();
 
+
   const body = new URLSearchParams();
   body.append("username", email);
   body.append("password", password);
-
+  setSubmitting(true);
   try {
     const response = await fetch("http://localhost:8080/auth/login", {
       method: "POST",
@@ -33,6 +36,9 @@ async function handleSubmit(e) {
   } catch (err) {
     setError("Something went wrong");
   }
+  finally {
+    setSubmitting(false);
+  }
 }
 
   return (
@@ -45,6 +51,10 @@ async function handleSubmit(e) {
       <button type="submit">Log in</button>
       {error && <p className="status error">{error}</p>}
     </form>
+    <button type="submit" disabled={submitting}>
+    {submitting && <span className="spinner"></span>}
+    {submitting ? "Logging in..." : "Log in"}
+    </button>
   </div>
 );
 }

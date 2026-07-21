@@ -3,12 +3,13 @@ import { useState } from "react";
 function UploadJobDescription({ jobId, onJdUploaded }) {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     const token = localStorage.getItem("access_token");
-
+    setSubmitting(true)
     try {
       const response = await fetch("http://localhost:8080/analyze/upload/job_description", {
         method: "POST",
@@ -38,6 +39,8 @@ function UploadJobDescription({ jobId, onJdUploaded }) {
         onJdUploaded();
     } catch (err) {
       setStatus("Something went wrong");
+    } finally {
+      setSubmitting(false)
     }
   }
 
