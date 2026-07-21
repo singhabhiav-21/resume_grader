@@ -56,7 +56,8 @@ async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user
     create_resume_collection(job_id, ready)
     add_job(job_id, user_id, "Processing resume")
     os.remove(md_path)
-    return {"filename": file.filename, "status": "sucess", "job_id": job_id}
+    print(f"CREATED collection resume for job_id={job_id!r} type={type(job_id)}")
+    return {"filename": file.filename, "status": "success", "job_id": job_id}
 
 
 @router.post(path="/upload/job_description")
@@ -85,6 +86,9 @@ async def analyze(user_id: Annotated[uuid.UUID, Depends(get_current_user)], job_
     if not check_job(job_id, user_id):
         raise HTTPException(status_code=404, detail="Job not Found!")
 
+    print(f"LOOKING UP collection for job_id={job_id!r} type={type(job_id)}")
+    print(f"Existing collections: {[c.name for c in client.list_collections()]}")
+
     cv_collection = client.get_collection(f"resume_{job_id}")
     jd_collection = client.get_collection(f"jd_{job_id}")
 
@@ -95,12 +99,12 @@ async def analyze(user_id: Annotated[uuid.UUID, Depends(get_current_user)], job_
     llm_chunks = get_results_feedback(gap_analysis)
     prompt = build_prompt(llm_chunks)
     llm_response = llm_feedback(prompt)
+
     client.delete_collection(f"resume_{job_id}")
     client.delete_collection(f"jd_{job_id}")
 
     update_job(job_id, user_id, "Completed")
     return llm_response
-
 
 
 
