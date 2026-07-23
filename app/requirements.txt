@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+python-dotenv
+psycopg2-binary
+sqlalchemy
+alembic
+bcrypt
+sentence-transformers<3.0
+chromadb
+pymupdf
+pymupdf4llm
+google-genai
+pyjwt
+passlib
+python-multipart
+pytest
