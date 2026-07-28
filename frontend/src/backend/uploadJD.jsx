@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {API_URL} from "../../vite.config.js";
 
 function UploadJobDescription({ jobId, onJdUploaded }) {
   const [description, setDescription] = useState("");
@@ -11,7 +12,7 @@ function UploadJobDescription({ jobId, onJdUploaded }) {
     const token = localStorage.getItem("access_token");
     setSubmitting(true)
     try {
-      const response = await fetch("http://localhost:8080/analyze/upload/job_description", {
+      const response = await fetch(`${API_URL}/analyze/upload/job_description`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {API_URL} from "../../vite.config.js";
 
 function UploadResume({onUploadSuccess}) {
   const [file, setFile] = useState(null);
@@ -22,7 +23,7 @@ function UploadResume({onUploadSuccess}) {
     formData.append("file", file );
   setSubmitting(true);
     try {
-      const response = await fetch("http://localhost:8080/analyze/upload_resume", {
+      const response = await fetch(`${API_URL}/analyze/upload_resume`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`

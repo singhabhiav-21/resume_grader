@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import {API_URL} from "../../vite.config.js";
 
 function Results({ jobId }) {
   const [feedback, setFeedback] = useState("");
@@ -11,8 +12,7 @@ function Results({ jobId }) {
       const token = localStorage.getItem("access_token");
 
       try {
-        const response = await fetch(
-          `http://localhost:8080/analyze/analyze/${jobId}`,
+        const response = await fetch(`${API_URL}/analyze/analyze/${jobId}`,
           {
             method: "POST",
             headers: {

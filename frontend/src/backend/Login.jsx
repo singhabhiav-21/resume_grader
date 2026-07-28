@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {API_URL} from "../../vite.config.js";
 
 function Login({onLoginSuccess}) {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ async function handleSubmit(e) {
   body.append("password", password);
   setSubmitting(true);
   try {
-    const response = await fetch("http://localhost:8080/auth/login", {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
