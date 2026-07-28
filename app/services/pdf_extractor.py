@@ -15,7 +15,7 @@ HEADER_PATTERNS = {
 HEADER_LINE_RE = re.compile(r"^(#{1,6})\s+(.*)$", re.MULTILINE)
 
 
-def convert_pdf_to_markdown(filepath, job_id, md_path=f"{os.getenv('FILE_PATH')}"):
+def convert_pdf_to_markdown(filepath, md_path=f"{os.getenv('FILE_PATH')}"):
     md = pymupdf4llm.to_markdown(filepath)
     file_name = filepath.split("/")[-1]
     print(file_name)
@@ -26,7 +26,7 @@ def convert_pdf_to_markdown(filepath, job_id, md_path=f"{os.getenv('FILE_PATH')}
             file.write(md)
     except FileExistsError:
         raise FileExistsError("File already exists!")
-    return md
+    return md, md_path
 
 
 def classify_headers(header_text: str):
