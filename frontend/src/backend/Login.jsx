@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {API_URL} from "../../vite.config.js";
+import {API_URL} from "../../config.js";
 
 function Login({onLoginSuccess}) {
   const [email, setEmail] = useState("");
