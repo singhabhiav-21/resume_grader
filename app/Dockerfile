@@ -12,7 +12,7 @@ COPY alembic.ini .
 COPY alembic/ ./alembic/
 ENV PYTHONPATH=/backend
 
-
+RUN mkdir -p /app/disk_stor /app/chroma_db
 EXPOSE 8080
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
