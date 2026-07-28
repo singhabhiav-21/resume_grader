@@ -1,6 +1,7 @@
 from logging.config import fileConfig
 from app.models.db import base
 from app.models.job import Jobs
+import os
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
@@ -9,6 +10,15 @@ from alembic import context
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+db_url = (
+        f"postgresql://{os.getenv('DB_USER')}:"
+        f"{os.getenv('DB_PASSWORD')}@"
+        f"{os.getenv('DB_HOST')}:"
+        f"{os.getenv('DB_PORT', '5432')}/"
+        f"{os.getenv('DB_NAME')}"
+        f"?sslmode={os.getenv('DB_SSLMODE', 'prefer')}"
+    )
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -25,6 +35,8 @@ target_metadata = base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+config.set_main_option("sqlalchemy.url", db_url)
 
 
 def run_migrations_offline() -> None:
