@@ -21,11 +21,30 @@ function Results({ jobId, onBack }) {
           return;
         }
 
-        const data = await response.json();
-        setFeedback(data);
+        setLoading(false); // headers are in, text starts arriving next
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const text = decoder.decode(value, { stream: true });
+          const lines = text.split("\n\n").filter(Boolean);
+
+          for (const line of lines) {
+            if (line.startsWith("event: error")) {
+              setError("Analysis service is temporarily unavailable, please try again shortly");
+              return;
+            }
+            if (line.startsWith("data: ")) {
+              setFeedback((prev) => prev + line.slice(6));
+            }
+          }
+        }
       } catch (err) {
         setError("Something went wrong");
-      } finally {
         setLoading(false);
       }
     }

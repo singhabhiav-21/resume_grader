@@ -2,6 +2,7 @@ import os
 import tempfile
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from starlette.responses import StreamingResponse
 
 from app.services.job_to_user import add_job, check_job, update_job
 from app.services.pdf_validator import validate_pdf, PDFValidationError
@@ -10,7 +11,7 @@ from app.services.pdf_extractor import convert_pdf_to_markdown, split_markdown_t
 from app.services.jd_validator import validate_jd
 from app.services.jd_extracter import split_header, chunk_to_embed, proper_meta_data
 from app.services.gap_analyzer import get_results, check_gap
-from app.services.feedback import get_results_feedback,build_prompt, llm_feedback
+from app.services.feedback import get_results_feedback, build_prompt, llm_feedback
 from pydantic import BaseModel
 from app.chroma_client import client
 from typing import Annotated
@@ -35,7 +36,8 @@ class UserUploadJobDesc(BaseModel):
 
 
 @router.post("/upload_resume", response_model=UserUploadRespnse)
-async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user)], file: Annotated[UploadFile, File()]):
+async def user_upload_pdf(user_id: Annotated[uuid.UUID, Depends(get_current_user)],
+                          file: Annotated[UploadFile, File()]):
     filebytes = await file.read()
     try:
         validate_pdf(filebytes)
@@ -98,15 +100,10 @@ async def analyze(user_id: Annotated[uuid.UUID, Depends(get_current_user)], job_
     #LLM input
     llm_chunks = get_results_feedback(gap_analysis)
     prompt = build_prompt(llm_chunks)
-    llm_response = llm_feedback(prompt)
+    llm_response = llm_feedback(prompt, job_id, user_id)
 
+    #Delete data
     client.delete_collection(f"resume_{job_id}")
     client.delete_collection(f"jd_{job_id}")
 
-    update_job(job_id, user_id, "Completed")
-    return llm_response
-
-
-
-
-
+    return StreamingResponse(llm_response, media_type="text/event-stream")

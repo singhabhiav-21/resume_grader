@@ -1,6 +1,9 @@
 from google import genai
-from google.genai._gaos.lib.compat_errors import RateLimitError
+from google.genai import types
+from google.genai.errors import APIError
 from fastapi import HTTPException
+
+from app.services.job_to_user import update_job
 
 
 def get_results_feedback(chunks):
@@ -43,27 +46,30 @@ STRICT RULES — follow exactly:
 - Quote or closely paraphrase the actual resume text when citing a
   strength; do not describe skills in more impressive terms than the
   original text supports.
+- Write in plain text only. Do not use markdown — no #, ##, *, **, -, or
+  any other markdown syntax. Section titles should be plain text on their
+  own line, followed by a colon.
 
 Provide feedback in this structure:
 
-## Overall Assessment
+Overall Assessment
 Summarize how well the resume matches the role, based only on the
 covered/partial/gap data above.
 
-## Strong Matches
+Strong Matches
 List requirements the candidate demonstrates, citing the specific resume
 text that supports each one.
 
-## Missing or Weak Areas
+Missing or Weak Areas
 List requirements marked as GAP or PARTIAL, and say plainly that the
 resume does not currently demonstrate them.
 
-## Resume Improvements
+Resume Improvements
 Suggest how the candidate could better *phrase or surface* existing
 experience to address weak areas — do not suggest they add experience
 they don't have.
 
-## Interview Risk Areas
+Interview Risk Areas
 If the GAP data is empty for both requirements and optional, write:
 "No significant risk areas identified — the resume shows strong alignment
 with this role's core requirements."
@@ -71,16 +77,16 @@ Otherwise, base this section only on entries actually marked GAP above.
 """
 
 
-def llm_feedback(prompt):
+def llm_feedback(prompt, job_id, user_id):
     client = genai.Client()
     try:
-        interaction = client.interactions.create(
-            model="gemini-3.5-flash",
-            input=prompt,
-            generation_config={
-                "thinking_level": "medium"
-            }
-        )
-    except RateLimitError:
-        raise HTTPException(status_code=503, detail="Analysis service is temporarily unavailable, please try again shortly")
-    return interaction.output_text
+        for chunk in client.models.generate_content_stream(
+                model="gemini-3.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(thinking_level="medium")):
+            if chunk.text:
+                yield f"data: {chunk.text}\n\n"
+        update_job(job_id, user_id, "Completed")
+    except APIError as e:
+        update_job(job_id, user_id, "Failed")
+        yield f"event: error\ndata: {str(e)}\n\n"
