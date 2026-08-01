@@ -1,7 +1,7 @@
 from google import genai
 from google.genai import types
 from google.genai.errors import APIError
-from fastapi import HTTPException
+import json
 
 from app.services.job_to_user import update_job
 
@@ -82,10 +82,9 @@ def llm_feedback(prompt, job_id, user_id):
     try:
         for chunk in client.models.generate_content_stream(
                 model="gemini-3.5-flash",
-                contents=prompt,
-                config=types.GenerateContentConfig(thinking_level="medium")):
+                contents=prompt):
             if chunk.text:
-                yield f"data: {chunk.text}\n\n"
+                yield f"data: {json.dumps(chunk.text)}\n\n"
         update_job(job_id, user_id, "Completed")
     except APIError as e:
         update_job(job_id, user_id, "Failed")

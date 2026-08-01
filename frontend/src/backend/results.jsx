@@ -10,6 +10,7 @@ function Results({ jobId, onBack }) {
   useEffect(() => {
     async function fetchResults() {
       const token = localStorage.getItem("access_token");
+
       try {
         const response = await fetch(`${API_URL}/analyze/analyze/${jobId}`, {
           method: "POST",
@@ -18,28 +19,37 @@ function Results({ jobId, onBack }) {
 
         if (!response.ok) {
           setError("Failed to get analysis");
+          setLoading(false);
           return;
         }
 
-        setLoading(false); // headers are in, text starts arriving next
+        // loading stays true here — headers arriving isn't the same as
+        // having actual content to show
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
+        let buffer = "";
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const text = decoder.decode(value, { stream: true });
-          const lines = text.split("\n\n").filter(Boolean);
+          buffer += decoder.decode(value, { stream: true });
 
-          for (const line of lines) {
-            if (line.startsWith("event: error")) {
+          let boundary;
+          while ((boundary = buffer.indexOf("\n\n")) !== -1) {
+            const message = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 2);
+
+            if (message.startsWith("event: error")) {
               setError("Analysis service is temporarily unavailable, please try again shortly");
+              setLoading(false);
               return;
             }
-            if (line.startsWith("data: ")) {
-              setFeedback((prev) => prev + line.slice(6));
+            if (message.startsWith("data: ")) {
+              const text = JSON.parse(message.slice(6));
+              setLoading(false); // first real chunk arrived — swap to results view now
+              setFeedback((prev) => prev + text);
             }
           }
         }
@@ -55,12 +65,15 @@ function Results({ jobId, onBack }) {
   }, [jobId]);
 
   if (loading) {
-    return (
-      <div className="card card-wide">
+  return (
+    <div className="card card-wide">
+      <div className="loading-center">
+        <div className="spinner-lg"></div>
         <p className="status">Analyzing resume against job description...</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="card card-wide">

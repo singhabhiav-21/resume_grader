@@ -17,7 +17,7 @@ from app.chroma_client import client
 from typing import Annotated
 from app.dependencies import get_current_user
 from app.services.sentence_embedder import create_resume_collection, create_jd_collection
-
+import time
 router = APIRouter(
     prefix="/analyze",
     tags=["analyze"]
@@ -88,22 +88,26 @@ async def analyze(user_id: Annotated[uuid.UUID, Depends(get_current_user)], job_
     if not check_job(job_id, user_id):
         raise HTTPException(status_code=404, detail="Job not Found!")
 
-    print(f"LOOKING UP collection for job_id={job_id!r} type={type(job_id)}")
-    print(f"Existing collections: {[c.name for c in client.list_collections()]}")
-
+    t0 = time.perf_counter()
     cv_collection = client.get_collection(f"resume_{job_id}")
     jd_collection = client.get_collection(f"jd_{job_id}")
+    print(f"get_collection: {time.perf_counter() - t0:.2f}s")
 
+    t1 = time.perf_counter()
     collection_chunk = get_results(cv_collection, jd_collection)
-    gap_analysis = check_gap(collection_chunk)
+    print(f"get_results: {time.perf_counter() - t1:.2f}s")
 
-    #LLM input
+    t2 = time.perf_counter()
+    gap_analysis = check_gap(collection_chunk)
+    print(f"check_gap: {time.perf_counter() - t2:.2f}s")
+
     llm_chunks = get_results_feedback(gap_analysis)
     prompt = build_prompt(llm_chunks)
+
     llm_response = llm_feedback(prompt, job_id, user_id)
 
-    #Delete data
     client.delete_collection(f"resume_{job_id}")
     client.delete_collection(f"jd_{job_id}")
 
+    print(f"total before streaming: {time.perf_counter() - t0:.2f}s")
     return StreamingResponse(llm_response, media_type="text/event-stream")
