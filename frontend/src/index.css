@@ -180,11 +180,22 @@ button:active:not(:disabled) {
   transform: scale(0.98);
 }
 
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .steps {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  margin-bottom: 1.75rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0;
+  width: 100%;
+  max-width: 480px;
 }
 
 .step-dot {
@@ -204,4 +215,47 @@ button:active:not(:disabled) {
 .step-dot.done {
   background: var(--accent);
   opacity: 0.4;
+}
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: -0.4rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checklist li.valid {
+  color: var(--accent);
+}
+
+.switch-link {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: inherit;
+  padding: 0;
+  cursor: pointer;
+  display: inline;
+}
+
+.link-button:hover {
+  background: none;
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.link-button:active {
+  transform: none;
 }

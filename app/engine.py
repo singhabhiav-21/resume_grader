@@ -11,6 +11,6 @@ def get_engine():
         f"{os.getenv('DB_HOST')}:"
         f"{os.getenv('DB_PORT', '5432')}/"
         f"{os.getenv('DB_NAME')}"
+        f"?sslmode={os.getenv('DB_SSLMODE', 'prefer')}"
     )
-
     return create_engine(url)

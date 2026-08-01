@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import {API_URL} from "../config.js";
+import { API_URL } from "../config.js";
 
-function Results({ jobId }) {
+function Results({ jobId, onBack }) {
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -10,20 +10,14 @@ function Results({ jobId }) {
   useEffect(() => {
     async function fetchResults() {
       const token = localStorage.getItem("access_token");
-
       try {
-        const response = await fetch(`${API_URL}/analyze/analyze/${jobId}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
+        const response = await fetch(`${API_URL}/analyze/analyze/${jobId}`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (!response.ok) {
           setError("Failed to get analysis");
-          setLoading(false);
           return;
         }
 
@@ -41,13 +35,20 @@ function Results({ jobId }) {
     fetchResults();
   }, [jobId]);
 
-  if (loading) return <div className="card card-wide"><p className="status">Analyzing resume against job description...</p></div>;
-  if (error) return <div className="card card-wide"><p className="status error">{error}</p></div>;
+  if (loading) {
+    return (
+      <div className="card card-wide">
+        <p className="status">Analyzing resume against job description...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="card card-wide">
       <h1>Your results</h1>
-      <div className="results-content">{feedback}</div>
+      {error && <p className="status error">{error}</p>}
+      {!error && <div className="results-content">{feedback}</div>}
+      <button type="button" onClick={onBack}>Back to start</button>
     </div>
   );
 }

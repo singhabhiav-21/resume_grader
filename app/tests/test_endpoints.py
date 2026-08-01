@@ -23,7 +23,7 @@ class TestUser:
 
     @patch("app.services.auth.bcrypt")
     @patch("app.services.auth.db")
-    def test_login_sucess(self, mock_db, mock_bcrypt):
+    def test_login_success(self, mock_db, mock_bcrypt):
         mock_user = MagicMock()
         mock_user.user_id = "some-uuid-1234"
         mock_user.email = "test@example.com"
