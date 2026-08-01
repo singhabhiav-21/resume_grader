@@ -2,24 +2,25 @@ from app.services.sentence_embedder import model
 
 
 def get_results(resume, jd):
+    results = []
     jd_data = jd.get(include=["documents", "metadatas"])
 
-    filtered = [
-        (text, meta) for text, meta in zip(jd_data["documents"], jd_data["metadatas"])
-        if meta["category"] != "responsibilities"
-    ]
-    text = [_ for _ in filtered]
-    query_embedding = model.encode([text], normalize_embeddings=True).tolist()
-    results = []
-    for (text, meta), embedding in zip(filtered, query_embedding):
-        match = resume.query(query_embeddings=[embedding], n_results=3)
+    for text, meta in zip(jd_data["documents"], jd_data["metadatas"]):
+        if meta["category"] == "responsibilities":
+            continue
+        if not text or not text.strip():
+            continue  # skip empty chunks — nothing to embed
+        query_embedding = model.encode([text], normalize_embeddings=True).tolist()
+        match = resume.query(
+            query_embeddings=query_embedding,
+            n_results=3
+        )
         results.append({
             "jd_text": text,
             "jd_category": meta["category"],
-            "matches": match,
+            "matches": match
         })
     return results
-
 
 def check_gap(chunks):
     summary = {
