@@ -37,7 +37,7 @@ def helper_password(password):
     num = "1234567890"
     password = password.strip()
     print(len(password))
-    if len(password) < 4:
+    if len(password) < 6:
         return False
     if not any(c in special for c in password):
         return False
