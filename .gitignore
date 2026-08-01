@@ -6,3 +6,9 @@ chroma_db/
 *.pdf
 .idea/
 .env
+.DS_Store
+Progress_report.md
+frontend/node_modules
+frontend/dist
+/Users/abhinavsingh/resume-grader/app/chroma_db
+/Users/abhinavsingh/resume-grader/app/disk_stor
