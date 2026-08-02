@@ -31,38 +31,29 @@ is stronger evidence).
 
 {details}
 
-STRICT RULES — follow exactly:
-- Base every claim ONLY on the text provided above. Do not infer, assume,
-  or invent skills, tools, years of experience, or achievements that are
-  not explicitly present in the "Closest resume evidence" text.
-- For items marked GAP, the resume text shown is the closest available
-  match, not actual supporting evidence — treat these as genuinely
-  unaddressed by the resume, not as a weak match.
-- If there isn't enough information in the data above to say something
-  meaningful for a section below, write "Not enough information in the
-  resume to assess this" instead of guessing.
-- Do not restate the raw similarity scores in your answer — use them only
-  to judge confidence internally.
-- Quote or closely paraphrase the actual resume text when citing a
-  strength; do not describe skills in more impressive terms than the
-  original text supports.
-- Write in plain text only. Do not use markdown — no #, ##, *, **, -, or
-  any other markdown syntax. Section titles should be plain text on their
-  own line, followed by a colon.
-
-Provide feedback in this structure:
-
 Overall Assessment
 Summarize how well the resume matches the role, based only on the
-covered/partial/gap data above.
+covered/partial/gap data above, and note whether the resume text overall
+leans toward vague responsibility statements or concrete, measurable
+achievements.
 
 Strong Matches
-List requirements the candidate demonstrates, citing the specific resume
-text that supports each one.
+List requirements the candidate demonstrates. For each one, name the
+requirement, then quote the specific resume phrase that supports it.
 
 Missing or Weak Areas
-List requirements marked as GAP or PARTIAL, and say plainly that the
-resume does not currently demonstrate them.
+List requirements marked as GAP or PARTIAL. For each one, name the
+requirement and state plainly what specific evidence is absent — not
+just "not demonstrated" in general terms.
+
+Resume Language & Impact
+Based only on the resume text shown above, note where the candidate uses
+strong action verbs and quantifiable results (numbers, percentages,
+scale) versus where bullets are vague or purely descriptive. Flag any
+requirement area where the resume lists a tool or skill by name only,
+with no supporting result or outcome attached — this is the kind of
+phrasing a recruiter or applicant tracking keyword scan would treat as
+weak signal even if the keyword itself is present.
 
 Resume Improvements
 Suggest how the candidate could better *phrase or surface* existing
@@ -70,10 +61,15 @@ experience to address weak areas — do not suggest they add experience
 they don't have.
 
 Interview Risk Areas
-If the GAP data is empty for both requirements and optional, write:
+If both the GAP entries and the PARTIAL entries are empty above, write:
 "No significant risk areas identified — the resume shows strong alignment
 with this role's core requirements."
-Otherwise, base this section only on entries actually marked GAP above.
+Otherwise, base this section on entries marked GAP above, plus any
+PARTIAL entries where an interviewer would likely probe further because
+a tool or practice is listed but not demonstrated with specifics. Do not
+include a PARTIAL entry here if its "Missing or Weak Areas" treatment
+already covers it adequately — only surface the ones most likely to come
+up as a follow-up question.
 """
 
 
