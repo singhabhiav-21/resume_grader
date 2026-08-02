@@ -15,7 +15,7 @@ TITLES_PATTERN = {
 }
 
 IGNORE_PATTERN = (
-    r"benefits|perks|how (?:it|jobgether) works|why apply|"
+    r"benefits|perks|what you'?ll get|what you get|how (?:it|jobgether) works|why apply|"
     r"data privacy notice|about\s+\w+|equal opportunity|"
     r"practical details|why this role|the team"
 )
@@ -33,6 +33,9 @@ def classifying_headers(line):
                 return category, ""
 
     if re.match(rf"^(?:{IGNORE_PATTERN})\b", bare):
+        return "__ignore__", ""
+
+    if not bare.startswith(("*", "-", "•")) and not bare.endswith((".", ",")):
         return "__ignore__", ""
 
     for category, pattern in TITLES_PATTERN.items():
