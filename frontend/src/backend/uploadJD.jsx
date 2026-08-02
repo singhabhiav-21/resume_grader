@@ -51,7 +51,9 @@ function UploadJobDescription({ jobId, onJdUploaded }) {
     <p className="subtitle">Paste the full job posting</p>
     <form onSubmit={handleSubmit}>
       <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Paste job description here" />
-      <button type="submit">Analyze</button>
+      <button type="submit" disabled={submitting}>
+  {submitting ? <span className="spinner" /> : "Analyze"}
+    </button>
       {status && <p className="status">{status}</p>}
     </form>
   </div>
