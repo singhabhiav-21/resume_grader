@@ -17,7 +17,7 @@ Resume Grader is a full-stack RAG (Retrieval-Augmented Generation) application t
 **Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 
 ```bash
-git clone https://github.com/your-username/resume-grader.git
+git clone https://github.com/singhabhiav-21/resume_grader.git
 cd resume-grader
 # Create a .env file with your DB credentials, JWT secret, and Gemini API key
 docker compose up --build
