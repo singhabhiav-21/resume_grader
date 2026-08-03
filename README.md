@@ -52,7 +52,7 @@ Copy and fill in the `.env` file (see above), then point `DB_HOST` at your local
 uvicorn app.main:app --reload
 ```
 
-Backend runs at **http://localhost:8000** (or the configured `$PORT`).
+Backend runs at **http://localhost:8080** (or the configured `$PORT`).
 
 ---
 
