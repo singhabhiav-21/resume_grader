@@ -8,7 +8,7 @@
 
 Resume Grader is a full-stack RAG (Retrieval-Augmented Generation) application that compares an uploaded resume against a job description and returns a structured, requirement-by-requirement gap analysis. It was built from scratch as a portfolio project to explore embedding-based semantic matching, RAG pipeline design, and secure document handling end-to-end.
 
-**Live Demo**: [https://your-deployment-url.vercel.app]
+**Live Demo**: [https://resume-grader-delta.vercel.app]
 
 ---
 
