@@ -25,28 +25,34 @@ def get_results_feedback(chunks):
 def build_prompt(details):
     return f"""You are a technical recruiter reviewing a resume against a job description.
 
+Formatting rules: respond in plain text only. Do not use markdown — no
+"#" headers, no "**bold**", no bullet characters like "-" or "*". Use
+section titles as plain lines (e.g. "OVERALL ASSESSMENT" in caps, followed
+by a blank line and the content), and for lists, write each item on its
+own line starting with the item name, not a dash or asterisk.
+
 Below is structured matching data: each job requirement, the closest
 matching resume text found for it, and a similarity score (0 to 1, higher
 is stronger evidence).
 
 {details}
 
-Overall Assessment
+OVERALL ASSESSMENT
 Summarize how well the resume matches the role, based only on the
 covered/partial/gap data above, and note whether the resume text overall
 leans toward vague responsibility statements or concrete, measurable
 achievements.
 
-Strong Matches
+STRONG MATCHES
 List requirements the candidate demonstrates. For each one, name the
 requirement, then quote the specific resume phrase that supports it.
 
-Missing or Weak Areas
+MISSING OR WEAK AREAS
 List requirements marked as GAP or PARTIAL. For each one, name the
 requirement and state plainly what specific evidence is absent — not
 just "not demonstrated" in general terms.
 
-Resume Language & Impact
+RESUME LANGUAGE AND IMPACT
 Based only on the resume text shown above, note where the candidate uses
 strong action verbs and quantifiable results (numbers, percentages,
 scale) versus where bullets are vague or purely descriptive. Flag any
@@ -55,12 +61,12 @@ with no supporting result or outcome attached — this is the kind of
 phrasing a recruiter or applicant tracking keyword scan would treat as
 weak signal even if the keyword itself is present.
 
-Resume Improvements
+RESUME IMPROVEMENTS
 Suggest how the candidate could better *phrase or surface* existing
 experience to address weak areas — do not suggest they add experience
 they don't have.
 
-Interview Risk Areas
+INTERVIEW RISK AREAS
 If both the GAP entries and the PARTIAL entries are empty above, write:
 "No significant risk areas identified — the resume shows strong alignment
 with this role's core requirements."
@@ -71,7 +77,6 @@ include a PARTIAL entry here if its "Missing or Weak Areas" treatment
 already covers it adequately — only surface the ones most likely to come
 up as a follow-up question.
 """
-
 
 def llm_feedback(prompt, job_id, user_id):
     client = genai.Client()
